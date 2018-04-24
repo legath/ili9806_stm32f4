@@ -21,7 +21,7 @@ SET(STM32_HAL_INCLUDE_DIRS
 )
 
 SET(STM32_PROCESSOR_OPT
-    "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+    "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp"
 )
 
 # Другие полезные пути
@@ -71,7 +71,7 @@ endif()
 # Флаги компиляторов, тут можно подкрутить
 SET(CMAKE_C_FLAGS "-isystem ${TOOLCHAIN_INC_DIR} ${STM32_PROCESSOR_OPT} -fno-builtin -Wall -std=gnu99 ${EXTRA_FLAGS_SEMIHOSTING}" CACHE INTERNAL "c compiler flags")
 SET(CMAKE_CXX_FLAGS "-isystem ${TOOLCHAIN_INC_DIR} ${STM32_PROCESSOR_OPT} -fno-builtin -Wall " CACHE INTERNAL "cxx compiler flags")
-SET(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,-Map -Wl,main.map ${STM32_PROCESSOR_OPT} " CACHE INTERNAL "exe link flags")
+SET(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,-Map -Wl,main.map ${STM32_PROCESSOR_OPT} -lc -lm -lnosys -specs=nano.specs" CACHE INTERNAL "exe link flags")
 SET(CMAKE_MODULE_LINKER_FLAGS "-L${TOOLCHAIN_LIB_DIR}" CACHE INTERNAL "module link flags")
 SET(CMAKE_SHARED_LINKER_FLAGS "-L${TOOLCHAIN_LIB_DIR}" CACHE INTERNAL "shared lnk flags")
 SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
@@ -83,22 +83,13 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY CACHE INTERNAL "")
 
 # Исходник CMSIS
 SET(STM32_SYSTEM_SOURCE ${STM32_HAL_DIR}/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c)
+SET(STM32_SYSTEM_SOURCE ${STM32_SYSTEM_SOURCE} ${STM32_HAL_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c)
+SET(STM32_SYSTEM_SOURCE ${STM32_SYSTEM_SOURCE} ${STM32_HAL_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c)
+SET(STM32_HAL_SRC_PATH ${STM32_HAL_DIR}/Drivers/STM32F4xx_HAL_Driver/Src)
+
+
 
 SET(STARTUP_PATH "${STM32_HAL_DIR}/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc")
-
-#[[
-startup_stm32f413xx.s
-startup_stm32f415xx.s
-startup_stm32f417xx.s
-startup_stm32f423xx.s
-startup_stm32f427xx.s
-startup_stm32f429xx.s
-startup_stm32f437xx.s
-startup_stm32f439xx.s
-startup_stm32f446xx.s
-startup_stm32f469xx.s
-startup_stm32f479xx.s
-]]#
 
 SET(STM32_STARTUP_401XC ${STARTUP_PATH}/startup_stm32f401xc.s)
 SET(STM32_STARTUP_401XE ${STARTUP_PATH}/startup_stm32f401xe.s)
@@ -112,25 +103,28 @@ SET(STM32_STARTUP_412CX ${STARTUP_PATH}/startup_stm32f412cx.s)
 SET(STM32_STARTUP_412RX ${STARTUP_PATH}/startup_stm32f412rx.s)
 SET(STM32_STARTUP_412VX ${STARTUP_PATH}/startup_stm32f412vx.s)
 SET(STM32_STARTUP_412ZX ${STARTUP_PATH}/startup_stm32f412zx.s)
+SET(STM32_STARTUP_413XX ${STARTUP_PATH}/startup_stm32f413xx.s)
+SET(STM32_STARTUP_415XX ${STARTUP_PATH}/startup_stm32f415xx.s)
+SET(STM32_STARTUP_417XX ${STARTUP_PATH}/startup_stm32f417xx.s)
+SET(STM32_STARTUP_423XX ${STARTUP_PATH}/startup_stm32f423xx.s)
+SET(STM32_STARTUP_427XX ${STARTUP_PATH}/startup_stm32f427xx.s)
+SET(STM32_STARTUP_429XX ${STARTUP_PATH}/startup_stm32f429xx.s)
+SET(STM32_STARTUP_437XX ${STARTUP_PATH}/startup_stm32f437xx.s)
+SET(STM32_STARTUP_439XX ${STARTUP_PATH}/startup_stm32f439xx.s)
+SET(STM32_STARTUP_446XX ${STARTUP_PATH}/startup_stm32f446xx.s)
+SET(STM32_STARTUP_469XX ${STARTUP_PATH}/startup_stm32f469xx.s)
+SET(STM32_STARTUP_479XX ${STARTUP_PATH}/startup_stm32f479xx.s)
 
+SET(STM32_ADC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_adc.c)
+SET(STM32_RCC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_rcc.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_rcc_ex.c)
+SET(STM32_GPIO_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_gpio.c)
+SET(STM32_RTC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_rtc.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_rtc_ex.c)
 
 
 #[[
-# Стартовые файлы - в них происходит низкоуровневая (начальная) инициализация чипа
-SET(STM32_STARTUP_CL ${STM32_StdPeriphLib_DIR}/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_cl.s)
-SET(STM32_STARTUP_HD ${STM32_StdPeriphLib_DIR}/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_hd.s)
-SET(STM32_STARTUP_HD_VL ${STM32_StdPeriphLib_DIR}/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_hd_vl.s)
-SET(STM32_STARTUP_LD ${STM32_StdPeriphLib_DIR}/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld.s)
-SET(STM32_STARTUP_LD_VL ${STM32_StdPeriphLib_DIR}/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld_vl.s)
-SET(STM32_STARTUP_MD ${STM32_StdPeriphLib_DIR}/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md.s)
-SET(STM32_STARTUP_MD_VL ${STM32_StdPeriphLib_DIR}/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md_vl.s)
-SET(STM32_STARTUP_XL ${STM32_StdPeriphLib_DIR}/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_xl.s)
-
-
 
 # Модули библиотеки стандартной переферии
-SET(STM32_MISC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/misc.c)
-SET(STM32_ADC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c)
+
 SET(STM32_BKP_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_bkp.c)
 SET(STM32_CAN_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_can.c)
 SET(STM32_CEC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c)
@@ -145,7 +139,6 @@ SET(STM32_GPIO_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Dr
 SET(STM32_I2C_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c)
 SET(STM32_IWDG_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_iwdg.c)
 SET(STM32_PWR_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_pwr.c)
-SET(STM32_RCC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c)
 SET(STM32_RTC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rtc.c)
 SET(STM32_SDIO_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c)
 SET(STM32_SPI_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c)

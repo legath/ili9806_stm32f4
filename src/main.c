@@ -63,7 +63,7 @@ static void MX_RTC_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+void _init(void){}
 /* USER CODE END 0 */
 
 /**

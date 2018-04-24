@@ -2,7 +2,7 @@
 # SET(SEMIHOSTING "enable")
 
 # Частота  HSE
-# SET(HSE_VALUE 16000000)
+ SET(HSE_VALUE 8000000)
 
 
 include(stm32.cmake)
@@ -12,34 +12,28 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 
 PROJECT(stm32f4template)
-
 # Размера флеша
-SET(STM32_FLASH_SIZE "64K")
+SET(STM32_FLASH_SIZE "1024K")
 # Размер рамы
-SET(STM32_RAM_SIZE "20K")
-# Адрес стека - конец оперативки => 0x20000000 + размер оперативки
-SET(STM32_STACK_ADDRESS "0x20010000")
+SET(STM32_RAM_SIZE "128K")
 
-# Адреса RAM и Flash
-SET(STM32_FLASH_ORIGIN "0x08000000")
-SET(STM32_RAM_ORIGIN "0x20000000")
+
 
 
 
 # Дерективы препроцессора, нужные для библиотеки STM.
 ADD_DEFINITIONS(
 # Тут нужно подставить свой чип
+        -DSTM32F417xx
 
 )
 
 # Стартовый файл
 # Тут нужно подставить свой чип (MD, MD_VL и т.д)
-SET(STARTUP_SOURCE ${STM32_STARTUP_MD})
+SET(STARTUP_SOURCE ${STM32_STARTUP_417XX})
 
 # Какие модули собирать
 SET(MOD_SOURCES
-#  ${SMT32_CMSIS_CORE_CM3}
-#  ${STM32_MISC_SOURCE}
 #  ${STM32_ADC_SOURCE}
 #  ${STM32_BKP_SOURCE}
 #  ${STM32_CAN_SOURCE}
@@ -51,12 +45,12 @@ SET(MOD_SOURCES
 #  ${STM32_EXTI_SOURCE}
 #  ${STM32_FLASH_SOURCE}
 #  ${STM32_FSMC_SOURCE}
-#  ${STM32_GPIO_SOURCE}
+  ${STM32_GPIO_SOURCE}
 #  ${STM32_I2C_SOURCE}
 #  ${STM32_IWDG_SOURCE}
 #  ${STM32_PWR_SOURCE}
-#  ${STM32_RCC_SOURCE}
-#  ${STM32_RTC_SOURCE}
+  ${STM32_RCC_SOURCE}
+  ${STM32_RTC_SOURCE}
 #  ${STM32_SDIO_SOURCE}
 #  ${STM32_SPI_SOURCE}
 #  ${STM32_TIM_SOURCE}
@@ -89,15 +83,17 @@ SET(SERVICE_SOURCES
 SET(COMPILE_DEFINITIONS_DEBUG -O0 -g3 -DDEBUG)
 SET(COMPILE_DEFINITIONS_RELEASE -Os)
 
-# Конфигурируем файл - скрипт компилятора: заменяем переменные в файле на размеры и адреса
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/stm32_flash.ld.in ${CMAKE_CURRENT_BINARY_DIR}/stm32_flash.ld)
-SET(CMAKE_EXE_LINKER_FLAGS "-T${CMAKE_CURRENT_BINARY_DIR}/stm32_flash.ld ${CMAKE_EXE_LINKER_FLAGS}")
 
 # Добавляем пути поиска заголовочных файлов
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/.
+  ${CMAKE_CURRENT_SOURCE_DIR}/inc
   ${STM32_HAL_INCLUDE_DIRS}
 )
+
+# Конфигурируем файл - скрипт компилятора: заменяем переменные в файле на размеры и адреса
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/stm32f4.ld.in ${CMAKE_CURRENT_BINARY_DIR}/stm32_flash.ld)
+SET(CMAKE_EXE_LINKER_FLAGS "-T${CMAKE_CURRENT_BINARY_DIR}/stm32_flash.ld ${CMAKE_EXE_LINKER_FLAGS}")
 
 # Собираем исходники пректа, модули, и т.д. в elf
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES} ${MOD_SOURCES} ${STARTUP_SOURCE} ${SERVICE_SOURCES})
