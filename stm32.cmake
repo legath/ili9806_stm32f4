@@ -115,36 +115,26 @@ SET(STM32_STARTUP_446XX ${STARTUP_PATH}/startup_stm32f446xx.s)
 SET(STM32_STARTUP_469XX ${STARTUP_PATH}/startup_stm32f469xx.s)
 SET(STM32_STARTUP_479XX ${STARTUP_PATH}/startup_stm32f479xx.s)
 
-SET(STM32_ADC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_adc.c)
+
+# Модули библиотеки стандартной переферии
+SET(STM32_ADC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_adc.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_adc_ex.c )
 SET(STM32_RCC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_rcc.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_rcc_ex.c)
 SET(STM32_GPIO_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_gpio.c)
 SET(STM32_RTC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_rtc.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_rtc_ex.c)
+SET(STM32_DAC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dac.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dac_ex.c)
+SET(STM32_CRC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_crc.c)
+SET(STM32_CEC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_cec.c)
+SET(STM32_DMA_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dma.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dma_ex.c)
+SET(STM32_DMA2D_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dma.c)
+SET(STM32_CAN_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_can.c)
+SET(STM32_FLASH_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_flash.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_flash_ex.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_flash_ramfunc.c)
+SET(STM32_USART_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_usart.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_uart.c)
+SET(STM32_SPI_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_spi.c)
+SET(STM32_TIM_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_tim.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_tim_ex.c)
+SET(STM32_WWDG_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_wwdg.c)
+SET(STM32_IWDG_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_iwdg.c)
+SET(STM32_PWR_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_pwr.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_pwr_ex.c)
+SET(STM32_I2C_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_i2c.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_i2c_ex.c)
 
 
-#[[
 
-# Модули библиотеки стандартной переферии
-
-SET(STM32_BKP_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_bkp.c)
-SET(STM32_CAN_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_can.c)
-SET(STM32_CEC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c)
-SET(STM32_CRC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_crc.c)
-SET(STM32_DAC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c)
-SET(STM32_DBGMCU_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dbgmcu.c)
-SET(STM32_DMA_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c)
-SET(STM32_EXTI_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c)
-SET(STM32_FLASH_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_flash.c)
-SET(STM32_FSMC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_fsmc.c)
-SET(STM32_GPIO_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c)
-SET(STM32_I2C_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c)
-SET(STM32_IWDG_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_iwdg.c)
-SET(STM32_PWR_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_pwr.c)
-SET(STM32_RTC_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rtc.c)
-SET(STM32_SDIO_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c)
-SET(STM32_SPI_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c)
-SET(STM32_TIM_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c)
-SET(STM32_USART_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c)
-SET(STM32_WWDG_SOURCE ${STM32_StdPeriphLib_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_wwdg.c)
-SET(SMT32_CMSIS_CORE_CM3 ${STM32_StdPeriphLib_DIR}/Libraries/CMSIS/CM3/CoreSupport/core_cm3.c)
-
-]]
