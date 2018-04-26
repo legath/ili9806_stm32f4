@@ -11,7 +11,7 @@ include(stm32.cmake)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 
-PROJECT(stm32f4template)
+PROJECT(ILI9806_test)
 # Размера флеша
 SET(STM32_FLASH_SIZE "1024K")
 # Размер рамы
@@ -25,7 +25,7 @@ SET(STM32_RAM_SIZE "128K")
 ADD_DEFINITIONS(
 # Тут нужно подставить свой чип
         -DSTM32F417xx
-
+        -DUSE_HAL_DRIVER
 )
 
 # Стартовый файл
@@ -39,7 +39,7 @@ SET(MOD_SOURCES
 #  ${STM32_CEC_SOURCE}
 #  ${STM32_CRC_SOURCE}
 #  ${STM32_DAC_SOURCE}
-#  ${STM32_DMA_SOURCE}
+  ${STM32_DMA_SOURCE}
 #  ${STM32_FLASH_SOURCE}
   ${STM32_GPIO_SOURCE}
 #  ${STM32_I2C_SOURCE}
@@ -51,6 +51,7 @@ SET(MOD_SOURCES
 #  ${STM32_TIM_SOURCE}
 #  ${STM32_USART_SOURCE}
 #  ${STM32_WWDG_SOURCE}
+   ${STM32_SRAM_SOURCE}
 )
 
 

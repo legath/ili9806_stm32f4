@@ -43,9 +43,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
+#include "fsmc.h"
 
 /* Private define ------------------------------------------------------------*/
 

@@ -136,6 +136,7 @@ SET(STM32_WWDG_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_wwdg.c)
 SET(STM32_IWDG_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_iwdg.c)
 SET(STM32_PWR_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_pwr.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_pwr_ex.c)
 SET(STM32_I2C_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_i2c.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_i2c_ex.c)
+SET(STM32_SRAM_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_sram.c ${STM32_HAL_SRC_PATH}/stm32f4xx_ll_fsmc.c)
 
 
 
