@@ -97,6 +97,8 @@ int main(void)
   MX_GPIO_Init();
  // MX_RTC_Init();
   FSMC_Init();
+  LCD_ReadId();
+  LCD_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
