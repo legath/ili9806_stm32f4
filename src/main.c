@@ -64,6 +64,33 @@ static void MX_RTC_Init(void);
 
 /* USER CODE BEGIN 0 */
 void _init(void){}
+void bl_init (){
+  GPIO_InitTypeDef GPIO_InitStruct;
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+  /*Configure GPIO pin : PB0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+}
+void rst_init (){
+  GPIO_InitTypeDef GPIO_InitStruct;
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+  /*Configure GPIO pin : PB0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+
+}
+void bl_on (){
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+}
+
+
+
 /* USER CODE END 0 */
 
 /**
@@ -71,34 +98,56 @@ void _init(void){}
   *
   * @retval None
   */
-int main(void)
-{
-  /* USER CODE BEGIN 1 */
+int main(void) {
+    /* USER CODE BEGIN 1 */
 
-  /* USER CODE END 1 */
+    /* USER CODE END 1 */
 
-  /* MCU Configuration----------------------------------------------------------*/
+    /* MCU Configuration----------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    HAL_Init();
 
-  /* USER CODE BEGIN Init */
+    /* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+    /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+    /* Configure the system clock */
+    SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+    /* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+    /* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
- // MX_RTC_Init();
-  FSMC_Init();
-  LCD_ReadId();
-  LCD_Init();
+    /* Initialize all configured peripherals */
+    MX_GPIO_Init();
+    HAL_Delay(1000);
+    bl_init();
+    rst_init();
+    bl_on();
+    // MX_RTC_Init();
+    FSMC_Init();
+    HAL_Delay(1000);
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
+    HAL_Delay(500);
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+
+    HAL_Delay(1000);
+
+    LCD_Init();
+
+    fillRect(0, 0, 480, 854, BLACK);
+    setRotation(1);
+
+    while (1) {
+
+        fillRect(0, 0, 854, 480, GREEN);
+        HAL_Delay(1000);
+        fillRect(0, 0, 854, 480, RED);
+
+        HAL_Delay(1000);
+        asm("nop");
+    }
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

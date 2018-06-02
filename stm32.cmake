@@ -21,7 +21,7 @@ SET(STM32_HAL_INCLUDE_DIRS
 )
 
 SET(STM32_PROCESSOR_OPT
-    "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp"
+    "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -ffunction-sections -fdata-sections"
 )
 
 # Другие полезные пути
@@ -72,7 +72,7 @@ endif()
 # Флаги компиляторов, тут можно подкрутить
 SET(CMAKE_C_FLAGS "-isystem ${TOOLCHAIN_INC_DIR} ${STM32_PROCESSOR_OPT} -fno-builtin -Wall -std=gnu99 ${EXTRA_FLAGS_SEMIHOSTING}" CACHE INTERNAL "c compiler flags")
 SET(CMAKE_CXX_FLAGS "-isystem ${TOOLCHAIN_INC_DIR} ${STM32_PROCESSOR_OPT} -fno-builtin -Wall " CACHE INTERNAL "cxx compiler flags")
-SET(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,-Map -Wl,main.map ${STM32_PROCESSOR_OPT} -lc -lm -lnosys -specs=nano.specs" CACHE INTERNAL "exe link flags")
+SET(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,-Map -Wl,main.map ${STM32_PROCESSOR_OPT} -lc -lm -lnosys -specs=nano.specs -Wl,--gc-sections" CACHE INTERNAL "exe link flags")
 SET(CMAKE_MODULE_LINKER_FLAGS "-L${TOOLCHAIN_LIB_DIR}" CACHE INTERNAL "module link flags")
 SET(CMAKE_SHARED_LINKER_FLAGS "-L${TOOLCHAIN_LIB_DIR}" CACHE INTERNAL "shared lnk flags")
 SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
@@ -126,7 +126,7 @@ SET(STM32_DAC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dac.c ${STM32_HAL_SRC_P
 SET(STM32_CRC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_crc.c)
 SET(STM32_CEC_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_cec.c)
 SET(STM32_DMA_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dma.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dma_ex.c)
-SET(STM32_DMA2D_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dma.c)
+SET(STM32_DMA2D_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_dma2d.c)
 SET(STM32_CAN_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_can.c)
 SET(STM32_FLASH_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_flash.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_flash_ex.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_flash_ramfunc.c)
 SET(STM32_USART_SOURCE ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_usart.c ${STM32_HAL_SRC_PATH}/stm32f4xx_hal_uart.c)

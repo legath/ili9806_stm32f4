@@ -7,6 +7,26 @@
 SRAM_HandleTypeDef hsram1;
 void FSMC_Init(void)
 {
+    __HAL_RCC_FSMC_CLK_ENABLE();
+    GPIO_InitTypeDef GPIO_InitStruct;
+
+    GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF12_FSMC;
+    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_14|GPIO_PIN_15|GPIO_PIN_0
+                          |GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF12_FSMC;
+    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+
+
     FSMC_NORSRAM_TimingTypeDef Timing;
 
     /** Perform the SRAM1 memory initialization sequence
@@ -16,7 +36,7 @@ void FSMC_Init(void)
     /* hsram1.Init */
     hsram1.Init.NSBank = FSMC_NORSRAM_BANK1;
     hsram1.Init.DataAddressMux = FSMC_DATA_ADDRESS_MUX_DISABLE;
-    hsram1.Init.MemoryType = FSMC_MEMORY_TYPE_NOR;
+    hsram1.Init.MemoryType = FSMC_MEMORY_TYPE_SRAM;
     hsram1.Init.MemoryDataWidth = FSMC_NORSRAM_MEM_BUS_WIDTH_16;
     hsram1.Init.BurstAccessMode = FSMC_BURST_ACCESS_MODE_DISABLE;
     hsram1.Init.WaitSignalPolarity = FSMC_WAIT_SIGNAL_POLARITY_LOW;
@@ -29,12 +49,12 @@ void FSMC_Init(void)
     hsram1.Init.WriteBurst = FSMC_WRITE_BURST_DISABLE;
     hsram1.Init.PageSize = FSMC_PAGE_SIZE_NONE;
     /* Timing */
-    Timing.AddressSetupTime = 15;
-    Timing.AddressHoldTime = 15;
-    Timing.DataSetupTime = 255;
-    Timing.BusTurnAroundDuration = 15;
-    Timing.CLKDivision = 16;
-    Timing.DataLatency = 17;
+    Timing.AddressSetupTime = 10;
+    Timing.AddressHoldTime = 1;
+    Timing.DataSetupTime = 15;
+    Timing.BusTurnAroundDuration = 0;
+    Timing.CLKDivision = 0;
+    Timing.DataLatency = 0;
     Timing.AccessMode = FSMC_ACCESS_MODE_B;
     /* ExtTiming */
 
@@ -75,14 +95,23 @@ void Lcd_Write_Reg(uint16_t reg,uint16_t value)
 }
 
 void LCD_ReadId(){
+    uint16_t  test[4];
     Lcd_Write_Cmd(0xD3);
-    uint16_t test=Lcd_Read_Data();
-    test=Lcd_Read_Data();
-    test=Lcd_Read_Data();
-    test=Lcd_Read_Data();
-    test=Lcd_Read_Data();
-    test=Lcd_Read_Data();
-
+    test[0]=Lcd_Read_Data();
+    test[1]=Lcd_Read_Data();
+    test[2]=Lcd_Read_Data();
+    test[3]=Lcd_Read_Data();
+    asm("nop");
+}
+void LCD_ReadId1(){
+    uint16_t  test[5];
+    Lcd_Write_Cmd(0xC7);
+    test[0]=Lcd_Read_Data();
+    test[1]=Lcd_Read_Data();
+    test[2]=Lcd_Read_Data();
+    test[3]=Lcd_Read_Data();
+    test[4]=Lcd_Read_Data();
+    asm("nop");
 }
 void LCD_Init()
 {
@@ -253,3 +282,71 @@ void LCD_Init()
 
 
 }
+void writeData16(uint16_t d, uint32_t num)
+{
+    while (num > 0)
+    {
+        Lcd_Write_Data(d);
+        num--;
+    }
+}
+
+void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
+{
+
+    setWindowAddress(x, y, x + w - 1, y + h - 1);
+    writeData16(color, w * h);
+
+}
+void fillPixel(int16_t x, int16_t y,  uint16_t color)
+{
+
+    setWindowAddress(x, y, x , y );
+    Lcd_Write_Data(color);
+
+}
+
+void setWindowAddress(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
+{
+    Lcd_Write_Cmd(CASET);  // Column addr set
+    Lcd_Write_Data(x0 >> 8);
+    Lcd_Write_Data(x0 & 0xFF); // XSTART
+    Lcd_Write_Data(x1 >> 8);
+    Lcd_Write_Data(x1 & 0xFF); // XEND
+    Lcd_Write_Cmd(PASET);  // Row addr set
+    Lcd_Write_Data(y0 >> 8);
+    Lcd_Write_Data(y0);        // YSTART
+    Lcd_Write_Data(y1 >> 8);
+    Lcd_Write_Data(y1);        // YEND
+    Lcd_Write_Cmd(RAMWR);  // write to RAM
+}
+
+void setRotation(uint8_t r)
+{
+
+    Lcd_Write_Cmd(MADCTL);
+    switch (r & 3)
+    {
+        case 0:
+            Lcd_Write_Data(0);
+            break;
+        case 1:
+            Lcd_Write_Data(MADCTL_MX | MADCTL_MV);
+            break;
+        case 2:
+            Lcd_Write_Data(MADCTL_MX | MADCTL_MY);
+            break;
+        case 3:
+            Lcd_Write_Data(MADCTL_MY | MADCTL_MV);
+            break;
+    }
+
+}
+//reportRegister(0xD3, 4, "Device Code ILI9806");
+//reportRegister(0x04, 4, "Manufacturer ID");
+//reportRegister(0x09, 5, "Status Register");
+//reportRegister(0x0A, 2, "Power Mode");
+//reportRegister(0x0B, 2, "MADCTL");
+//reportRegister(0x0C, 2, "Pixel Format");
+//reportRegister(0x54, 2, "Display CTRL");
+//reportRegister(0x54, 2, "Display CABC");
